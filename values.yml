@@ -1,4 +1,4 @@
-gitProvider: github_alex
+gitProvider: jfrog_pipeline
 artifactory: artifactory
 repoPath: alexwang66/jfrog-pipelines-maven-sample
 deployerRepo: demo-mvn-prod-local
