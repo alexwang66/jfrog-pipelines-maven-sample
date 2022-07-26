@@ -18,6 +18,7 @@ pipelines:
     steps:
       - name: mvn_build_step
         type: MvnBuild
+          mvnCommand: package
         configuration:
           deployerSnapshotRepo: {{ .Values.deployerRepo }}
           deployerReleaseRepo: {{ .Values.deployerRepo }}
