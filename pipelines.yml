@@ -18,7 +18,6 @@ pipelines:
     steps:
       - name: mvn_build_step
         type: MvnBuild
-          mvnCommand: package
         configuration:
           runtime:
           type: image
