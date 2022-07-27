@@ -20,13 +20,13 @@ pipelines:
         type: MvnBuild
         configuration:
           runtime:
-          type: image
-          image:
-            auto:
-              language: java
-              version: "8" # Either "version" or "versions" can be used.
-              versions:
-                - "8"
+            type: image
+            image:
+              auto:
+                language: java
+                version: "8" # Either "version" or "versions" can be used.
+                versions:
+                  - "8"
           deployerSnapshotRepo: {{ .Values.deployerRepo }}
           deployerReleaseRepo: {{ .Values.deployerRepo }}
           inputResources:
