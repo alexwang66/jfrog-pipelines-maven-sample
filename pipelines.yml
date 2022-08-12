@@ -14,16 +14,23 @@ resources:
       sourceArtifactory: {{ .Values.artifactory }}
 
 pipelines:
-  - name: demo_maven
+  - name: pipelines_caching
     steps:
-      - name: mvn_build_step
-        type: MvnBuild
+      - name: pipelines_caching
+        type: Bash
+        configuration:
+          inputResources:
+            - name: jfrog_pipeline
         execution:
           onExecute:
             - restore_cache_files maven_cache ~/.m2
             - npm install
           onComplete:
             - add_cache_files ~/.m2 maven_cache
+  - name: demo_maven
+    steps:
+      - name: mvn_build_step
+        type: MvnBuild
         configuration:
           runtime:
             type: image
