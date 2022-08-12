@@ -18,6 +18,12 @@ pipelines:
     steps:
       - name: mvn_build_step
         type: MvnBuild
+        execution:
+          onExecute:
+            - restore_cache_files maven_cache ~/.m2
+            - npm install
+          onComplete:
+            - add_cache_files ~/.m2 maven_cache
         configuration:
           runtime:
             type: image
