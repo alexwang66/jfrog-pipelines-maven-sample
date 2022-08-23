@@ -9,8 +9,6 @@ resources:
       gitProvider: {{ .Values.gitProvider }}
       buildOn:
         commit: true
-        pullRequestCreate: true
-        releaseRequestCreate: true
 
   - name: mvn_build_info
     type: BuildInfo
