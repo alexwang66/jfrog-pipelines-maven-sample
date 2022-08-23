@@ -14,7 +14,7 @@ resources:
       sourceArtifactory: {{ .Values.artifactory }}
 
 pipelines:
-  - name: my_first_pipeline
+  - name: first_pipeline
     steps:
       - name: p1_s1
         type: Bash
