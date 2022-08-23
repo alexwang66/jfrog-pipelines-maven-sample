@@ -7,6 +7,10 @@ resources:
     configuration:
       path: {{ .Values.repoPath }}
       gitProvider: {{ .Values.gitProvider }}
+      buildOn:
+        commit: true
+        pullRequestCreate: true
+        releaseRequestCreate: true
 
   - name: mvn_build_info
     type: BuildInfo
@@ -14,46 +18,33 @@ resources:
       sourceArtifactory: {{ .Values.artifactory }}
 
 pipelines:
-  - name: pipelines_caching
-    steps:
-      - name: pipelines_caching
-        type: Bash
-        configuration:
-          inputResources:
-            - name: jfrog_pipeline
-        execution:
-          onExecute:
-            - restore_cache_files maven_cache ~/.m2
-            - npm install
-          onComplete:
-            - add_cache_files ~/.m2 maven_cache
   - name: demo_maven
     steps:
-      - name: mvn_build_step
-        type: MvnBuild
-        configuration:
-          runtime:
-            type: image
-            image:
-              auto:
-                language: java
-                versions:
-                  - "8"
-          deployerSnapshotRepo: {{ .Values.deployerRepo }}
-          deployerReleaseRepo: {{ .Values.deployerRepo }}
-          inputResources:
-            - name: jfrog_pipeline
-          integrations:
-            - name: {{ .Values.artifactory }}
-
-      - name: publish_build
-        type: PublishBuildInfo
-        configuration:
-          forceXrayScan: false
-          inputSteps:
-            - name: mvn_build_step
-          outputResources:
-            - name: mvn_build_info
+#      - name: mvn_build_step
+#        type: MvnBuild
+#        configuration:
+#          runtime:
+#            type: image
+#            image:
+#              auto:
+#                language: java
+#                versions:
+#                  - "8"
+#          deployerSnapshotRepo: {{ .Values.deployerRepo }}
+#          deployerReleaseRepo: {{ .Values.deployerRepo }}
+#          inputResources:
+#            - name: jfrog_pipeline
+#          integrations:
+#            - name: {{ .Values.artifactory }}
+#
+#      - name: publish_build
+#        type: PublishBuildInfo
+#        configuration:
+#          forceXrayScan: false
+#          inputSteps:
+#            - name: mvn_build_step
+#          outputResources:
+#            - name: mvn_build_info
       - name: docker_build
         type: DockerBuild
         configuration:
