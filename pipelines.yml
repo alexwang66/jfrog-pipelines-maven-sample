@@ -14,33 +14,43 @@ resources:
       sourceArtifactory: {{ .Values.artifactory }}
 
 pipelines:
-  - name: first_pipeline
+  - name: pipelines_caching
     steps:
-      - name: p1_s1
+      - name: pipelines_caching
         type: Bash
         configuration:
           inputResources:
-            # Sets up step to be triggered when there are commit events to myFirstRepo
             - name: jfrog_pipeline
         execution:
           onExecute:
-            # Data from input resources is available as env variables in the step
-            - echo $res_myFirstRepo_commitSha
-            # The next two commands add variables to run state, which is available to all downstream steps in this run
-            # Run state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-RunState
-            - add_run_variables current_runid=$run_id
-            - add_run_variables commitSha=$res_myFirstRepo_commitSha
-            # This variable is written to pipeline state in p1_s3.
-            # So this will be empty during first run and will be set to prior run number in subsequent runs
-            # Pipeline state documentation: https://www.jfrog.com/confluence/display/JFROG/Creating+Stateful+Pipelines#CreatingStatefulPipelines-PipelineState
-            - echo "Previous run ID is $prev_runid"
-
-      - name: p1_s2
-        type: Bash
+            - restore_cache_files maven_cache ~/.m2
+            - npm install
+          onComplete:
+            - add_cache_files ~/.m2 maven_cache
+  - name: demo_maven
+    steps:
+      - name: mvn_build_step
+        type: MvnBuild
         configuration:
+          runtime:
+            type: image
+            image:
+              auto:
+                language: java
+                versions:
+                  - "8"
+          deployerSnapshotRepo: {{ .Values.deployerRepo }}
+          deployerReleaseRepo: {{ .Values.deployerRepo }}
+          inputResources:
+            - name: jfrog_pipeline
+          integrations:
+            - name: {{ .Values.artifactory }}
+
+      - name: publish_build
+        type: PublishBuildInfo
+        configuration:
+          forceXrayScan: false
           inputSteps:
-            - name: p1_s1
-        execution:
-          onExecute:
-            # Demonstrates the availability of an env variable written to run state during p1_s1
-            - echo $current_runid
+            - name: mvn_build_step
+          outputResources:
+            - name: mvn_build_info
