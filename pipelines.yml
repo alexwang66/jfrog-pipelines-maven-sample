@@ -63,7 +63,5 @@ pipelines:
           dockerFileName: Dockerfile
           dockerImageName: demo.jfrogchina.com/demo-docker-prod-local/multi    # replace with your fully qualified Docker registry/image name
           dockerImageTag: ${run_number}
-          inputResources:
-            - name: mvn_build_step
           integrations:
             - name: {{ .Values.artifactory }}
