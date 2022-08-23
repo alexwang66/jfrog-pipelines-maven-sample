@@ -54,9 +54,7 @@ pipelines:
             - name: mvn_build_step
           outputResources:
             - name: mvn_build_info
-  - name: docker_build
-    steps:
-      - name: bld_image
+      - name: docker_build
         type: DockerBuild
         configuration:
           dockerFileLocation: .
@@ -67,3 +65,4 @@ pipelines:
             - name: jfrog_pipeline
           integrations:
             - name: {{ .Values.artifactory }}
+
